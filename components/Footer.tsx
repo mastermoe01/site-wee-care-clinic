@@ -23,8 +23,10 @@ export default function Footer() {
           </ul>
         </div>
         <div>
-          <p className="font-display text-xl font-semibold">Follow along</p>
+          <p className="font-display text-xl font-semibold">More</p>
           <ul className="mt-3 space-y-1">
+            <li><Link className="underline underline-offset-4" href="/reviews">Reviews</Link></li>
+            <li><Link className="underline underline-offset-4" href="/visit">Visit us</Link></li>
             <li><a className="underline underline-offset-4" href={clinic.facebook}>Facebook</a></li>
             <li><a className="underline underline-offset-4" href={clinic.instagram}>Instagram</a></li>
           </ul>

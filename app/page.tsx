@@ -5,18 +5,14 @@ import path from "node:path";
 import HeroVisual from "@/components/HeroVisual";
 import OpenNow from "@/components/OpenNow";
 import Reveal from "@/components/Reveal";
-import { addressLine, clinic } from "@/lib/clinic";
+import Faq from "@/components/Faq";
+import RatingBars from "@/components/RatingBars";
+import WeekBar from "@/components/WeekBar";
+import { addressLine, clinic, services } from "@/lib/clinic";
 import reviews from "@/lib/reviews.json";
 
 const hasVideo = (slug: string, file: string) =>
   existsSync(path.join(process.cwd(), "public", "videos", slug, file));
-
-const services = [
-  { title: "Pediatric urgent care", body: "Walk-in care for ages 8 weeks to 24 years, in the after-school and evening hours.", emoji: "🧸" },
-  { title: "Physicals", body: "School, day care, camp and sports physicals, by appointment.", emoji: "🏅" },
-  { title: "CDL and DOT exams", body: "DOT exams by appointment, plus DOT federal drug and alcohol testing.", emoji: "🚚" },
-  { title: "Testing", body: "Urine drug screens and DNA testing, by appointment.", emoji: "🧪" },
-];
 
 export default function Home() {
   const walkthrough = hasVideo("wee-care-clinic", "walkthrough.mp4");
@@ -64,18 +60,27 @@ export default function Home() {
 
       <section className="container-w mt-24">
         <Reveal><h2 className="text-4xl text-navy md:text-5xl">What we take care of</h2></Reveal>
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((s, i) => (
-            <Reveal key={s.title} delay={i * 0.06}>
-              <div className="wiggle-card h-full rounded-3xl bg-white p-6 shadow-md">
+            <Reveal key={s.slug} delay={i * 0.06}>
+              <Link href={`/services/${s.slug}`} className="wiggle-card block h-full rounded-3xl bg-white p-6 shadow-md">
                 <p className="text-4xl" aria-hidden>{s.emoji}</p>
                 <h3 className="mt-3 text-2xl text-navy">{s.title}</h3>
-                <p className="mt-2 text-muted">{s.body}</p>
-              </div>
+                <p className="mt-2 text-muted">{s.short}</p>
+              </Link>
             </Reveal>
           ))}
         </div>
         <p className="mt-6"><Link href="/services" className="font-semibold text-berry underline underline-offset-4">See all services</Link></p>
+      </section>
+
+      <section className="container-w mt-24 grid items-start gap-8 md:grid-cols-[0.8fr_1.2fr]" aria-labelledby="week">
+        <Reveal>
+          <h2 id="week" className="text-4xl text-navy md:text-5xl">Open when school lets out</h2>
+          <p className="mt-4 text-lg text-muted">Weekdays from 2 pm to 8 pm and Saturday mornings, with no appointment needed for urgent care.</p>
+          <p className="mt-4"><Link href="/visit" className="font-semibold text-berry underline underline-offset-4">Directions, parking and payment</Link></p>
+        </Reveal>
+        <Reveal delay={0.08}><WeekBar /></Reveal>
       </section>
 
       <section className="mt-24 bg-heart-soft py-16">
@@ -87,7 +92,7 @@ export default function Home() {
             </p>
           </Reveal>
           <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {reviews.map((r, i) => (
+            {reviews.slice(0, 6).map((r, i) => (
               <Reveal key={r.name + r.date} delay={(i % 3) * 0.06}>
                 <figure className="h-full rounded-3xl bg-white p-6 shadow-md">
                   <p aria-label={`${r.stars} out of 5 stars`} className="text-xl text-tangerine">{"★".repeat(r.stars)}</p>
@@ -98,6 +103,15 @@ export default function Home() {
             ))}
           </div>
         </div>
+      </section>
+
+      <section className="container-w mt-24 grid items-start gap-8 md:grid-cols-[0.8fr_1.2fr]" aria-labelledby="faq">
+        <Reveal><RatingBars /><p className="mt-4"><Link href="/reviews" className="font-semibold text-berry underline underline-offset-4">Read more reviews</Link></p></Reveal>
+        <Reveal delay={0.08}>
+          <h2 id="faq" className="text-4xl text-navy md:text-5xl">Good to know</h2>
+          <div className="mt-5"><Faq limit={5} /></div>
+          <p className="mt-4"><Link href="/visit" className="font-semibold text-berry underline underline-offset-4">More questions</Link></p>
+        </Reveal>
       </section>
 
       {walkthrough && (
